@@ -1,3 +1,18 @@
+</div>
+
+* 此项目来源于[MiniMind-v](https://github.com/jingyaogong/minimind-v)
+
+<details>
+<summary> <b>2026-05-31</b> </summary>
+
+- 将NaFlexVit替换SigLIP，模型支持动态分辨率输入，使用前应在[huggingface](https://huggingface.co/timm/naflexvit_base_patch16_parfac_gap.e300_s576_in1k)下载NaFlexVit权重
+- 避免大分辨率图片造成输入Token溢出，使用两种可选的projector方式：1.MLP方式 2.cross_attention方式，可在`model/model_vlm_naflexvit`中的config中更换
+- 训练数据来自于MiniMind-v，环境配置同MiniMind-v一致，可直接使用`trainer/train_pretrain_vlm_naflexvit` or `trainer/train_sft_vlm_naflexvit`
+- 将更新lora文件，尝试让模型具有Grounding能力。
+</details>
+
+
+
 <div align="center">
 
 ![logo](./images/logo.png)
