@@ -13,7 +13,7 @@ import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel
 from torch.utils.data import Sampler
 from transformers import AutoTokenizer
-from model.model_vlm import MiniMindVLM
+from model.model_vlm1 import MiniMindVLM
 
 
 def get_model_params(model, config, ignore_patterns=['vision_encoder']):
@@ -34,9 +34,12 @@ def is_main_process():
     return not dist.is_initialized() or dist.get_rank() == 0
 
 
-def Logger(content):
+def Logger(content, log_file=None):
     if is_main_process():
         print(content)
+        if log_file:
+            with open(log_file, 'a', encoding='utf-8') as f:
+                f.write(f"{content}\n")
 
 
 def get_lr(current_step, total_steps, lr):
@@ -70,6 +73,7 @@ def init_vlm_model(vlm_config, from_weight='pretrain_vlm', tokenizer_path='../mo
     if from_weight != 'none':
         moe_suffix = '_moe' if vlm_config.use_moe else ''
         weight_path = f'{save_dir}/{from_weight}_{vlm_config.hidden_size}{moe_suffix}.pth'
+        Logger(f"weight:{weight_path}")
         weights = torch.load(weight_path, map_location=device)
         model.load_state_dict(weights, strict=False)
     
@@ -90,6 +94,10 @@ def init_vlm_model(vlm_config, from_weight='pretrain_vlm', tokenizer_path='../mo
                 param.requires_grad = True
     elif freeze_llm == 2:
         pass
+
+    elif freeze_llm == 3:
+        for name, param in model.named_parameters():
+            param.requires_grad = False
 
     get_model_params(model, vlm_config)
     Logger(f'Trainable Params: {sum(p.numel() for p in model.parameters() if p.requires_grad) / 1e6:.3f}M')
