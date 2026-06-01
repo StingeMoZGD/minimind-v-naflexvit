@@ -3,6 +3,21 @@
 * 此项目来源于[MiniMind-v](https://github.com/jingyaogong/minimind-v)
 
 <details>
+<summary> <b>2026-06-01更新lora微调文件</b> </summary>
+
+- 更新lora微调文件，可通过`trainer/train_lora_vlm`使用，验证可通过`scripts/web_demo_vlm_grounding`
+- 微调数据集格式：
+```bash
+{
+    "conversation": [
+        {"role": "user", "content": "<image> 找出图中的<|object_ref_start|>羊<|object_ref_end|>？"}, 
+        {"role": "assistant", "content": "<|box_start|>(x1,y1),(x2,y2)<|box_end|>", "reasoning_content": ""}],
+    "image_bytes": b'...'
+}
+```
+</details>
+
+<details>
 <summary> <b>2026-05-31更新动态分辨率图片输入</b> </summary>
 
 - 将NaFlexVit替换SigLIP，模型支持动态分辨率输入，使用前应在[huggingface](https://huggingface.co/timm/naflexvit_base_patch16_parfac_gap.e300_s576_in1k)下载NaFlexVit权重
