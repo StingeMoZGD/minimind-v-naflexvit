@@ -142,18 +142,7 @@ class MMVisionProjector(nn.Module):
                 )
                 x = x.transpose(1,2)
         x = self.mlp(x)
-        print(f"projector: {x.shape}")
         return x
-
-    def forward(self, x):
-        if x.shape[1] != self.target_tokens:
-            x = x.transpose(1,2)
-            x = F.adaptive_avg_pool1d(
-                x,
-                self.target_tokens
-            )
-            x = x.transpose(1,2)
-        return self.mlp(x)
 
 # 修改 MiniMindVLM 的 __init__ 默认路径
 class MiniMindVLM_naflexvit(MiniMindForCausalLM):
